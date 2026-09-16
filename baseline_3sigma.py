@@ -71,7 +71,9 @@ def rank_week(frame: pd.DataFrame, monday: dt.date) -> pd.DataFrame:
         flagged_hours=("flagged", "sum"),
         worst_metric=("worst_metric", lambda s: next((v for v in s if v), "")),
     )
-    return grouped.sort_values("flagged_hours", ascending=False).reset_index()
+    return grouped.sort_values(
+        ["flagged_hours", "gateway_id"], ascending=[False, True], kind="mergesort"
+    ).reset_index()
 
 
 def build_predictions(frame: pd.DataFrame) -> pd.DataFrame:
@@ -105,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     # Works both from this repository and from the copy shipped alongside the data.
     default_data = here / "data" if (here / "data").exists() else here.parent / "student-brief" / "data"
     parser.add_argument("--data", type=pathlib.Path, default=default_data)
-    parser.add_argument("--out", type=pathlib.Path, default=here / "predictions_baseline.csv")
+    parser.add_argument("--out", type=pathlib.Path, default=here / "predictions.csv")
     args = parser.parse_args(argv)
 
     frame = load(args.data)
