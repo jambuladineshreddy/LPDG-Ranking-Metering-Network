@@ -9,7 +9,7 @@ __pycache__/
 *.pyo
 
 
-data/
+/data/
 
 
 # OS/editor files

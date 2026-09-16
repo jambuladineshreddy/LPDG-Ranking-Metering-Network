@@ -9,7 +9,7 @@ VENV_PYTHON := $(VENV)/bin/python
 VENV_PIP := $(VENV)/bin/pip
 endif
 
-.PHONY: install run validate clean
+.PHONY: install run validate test serve clean
 
 install:
 	$(PYTHON) -m venv $(VENV)
@@ -21,6 +21,12 @@ run: install
 
 validate: run
 	$(VENV_PYTHON) validate_submission.py --path ./predictions.csv
+
+test: install
+	$(VENV_PYTHON) -m pytest -v tests/
+
+serve: install
+	$(VENV_PYTHON) -m uvicorn src.api.main:app --host 127.0.0.1 --port 8000
 
 clean:
 	rm -rf $(VENV)
